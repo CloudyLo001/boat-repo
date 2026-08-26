@@ -27,6 +27,13 @@ jobs:
           node-version: '22'
           cache: npm
 
+      - name: Configure Pages
+        # enablement:true turns Pages on via the workflow's own token, so the
+        # repo does not need it switched on by hand first.
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - run: npm ci
 
       - name: Build
