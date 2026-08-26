@@ -1,0 +1,11 @@
+import { chromium } from '@playwright/test';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+await page.goto('https://cloudylo001.github.io/boat-repo/', { waitUntil: 'networkidle' });
+await page.waitForTimeout(2000);
+await page.screenshot({ path: 'artifacts/live-menu.png' });
+await page.click('#play-button');
+await page.waitForTimeout(7000);
+await page.screenshot({ path: 'artifacts/live-game.png' });
+console.log('captured live site');
+await browser.close();
