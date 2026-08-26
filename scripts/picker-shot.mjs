@@ -1,0 +1,12 @@
+import { chromium } from '@playwright/test';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.waitForTimeout(900);
+await page.click('#play-button');
+await page.waitForTimeout(4000);
+await page.click('#boat-picker-button');
+await page.waitForTimeout(700);
+await page.screenshot({ path: 'artifacts/boat-picker.png' });
+await browser.close();
+console.log('ok');

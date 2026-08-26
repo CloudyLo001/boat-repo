@@ -1,0 +1,13 @@
+import { chromium } from '@playwright/test';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.waitForTimeout(900);
+await page.click('#play-button');
+await page.waitForTimeout(4000);
+await page.screenshot({ path: 'artifacts/audio-unmuted.png' });
+await page.click('#mute-button');
+await page.waitForTimeout(500);
+await page.screenshot({ path: 'artifacts/audio-muted.png' });
+console.log('ok');
+await browser.close();

@@ -1,0 +1,1386 @@
+{
+  "registryVersion": 1,
+  "mintProject": {
+    "projectId": "zd71sahk16e5hvnayp01vzevm58d415f",
+    "name": "Boat Park Game"
+  },
+  "assetRoot": "public/assets/mint",
+  "assets": {
+    "boat-carrier": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks76rngvk454jrqya4p11e880n8d52ga"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "aircraft-carrier-0n8d52ga-original.glb",
+          "localPath": "public/assets/mint/boat-carrier/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 910892,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "aircraft-carrier-0n8d52ga-preview.webp",
+          "localPath": "public/assets/mint/boat-carrier/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 76954
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-carrier/preview_image.webp"
+    },
+    "boat-container": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7c3xs845zscx60pfw4vp87a98d50jd"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "colorstack-cargo-freighter-a98d50jd-original.glb",
+          "localPath": "public/assets/mint/boat-container/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 804624,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "colorstack-cargo-freighter-a98d50jd-preview.webp",
+          "localPath": "public/assets/mint/boat-container/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 62178
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-container/preview_image.webp"
+    },
+    "boat-cruise": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7a2aweeqef60e7vxmkm0t21s8d4ja4"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "white-balcony-liner-1s8d4ja4-original.glb",
+          "localPath": "public/assets/mint/boat-cruise/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 1199528,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "white-balcony-liner-1s8d4ja4-preview.webp",
+          "localPath": "public/assets/mint/boat-cruise/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 76020
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-cruise/preview_image.webp"
+    },
+    "boat-dinghy": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7ahdgsqkp22a203gvnvpz4a18d4xbh"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "dinghy-a18d4xbh-original.glb",
+          "localPath": "public/assets/mint/boat-dinghy/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 711976,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "dinghy-a18d4xbh-preview.webp",
+          "localPath": "public/assets/mint/boat-dinghy/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 42576
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-dinghy/preview_image.webp"
+    },
+    "boat-sailboat": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks79j0ehr72yg2q39y8ehqhtbs8d44as"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "sailboat-bs8d44as-original.glb",
+          "localPath": "public/assets/mint/boat-sailboat/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 1054712,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "sailboat-bs8d44as-preview.webp",
+          "localPath": "public/assets/mint/boat-sailboat/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 88206
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-sailboat/preview_image.webp"
+    },
+    "boat-speedboat": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7982prbq21e2per0zf1gp6sd8d5nbz"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "red-stripe-speedboat-sd8d5nbz-original.glb",
+          "localPath": "public/assets/mint/boat-speedboat/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 876380,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "red-stripe-speedboat-sd8d5nbz-preview.webp",
+          "localPath": "public/assets/mint/boat-speedboat/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 48284
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-speedboat/preview_image.webp"
+    },
+    "boat-trawler": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7d1tcaz745e7j61ev917zvgs8d4fmy"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "fishing-trawler-gs8d4fmy-original.glb",
+          "localPath": "public/assets/mint/boat-trawler/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 1274936,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "fishing-trawler-gs8d4fmy-preview.webp",
+          "localPath": "public/assets/mint/boat-trawler/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 91222
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-trawler/preview_image.webp"
+    },
+    "boat-tugboat": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7f2s62db3chpw823mrb6j4vn8d5ec2"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "tugboat-vn8d5ec2-original.glb",
+          "localPath": "public/assets/mint/boat-tugboat/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 846036,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "tugboat-vn8d5ec2-preview.webp",
+          "localPath": "public/assets/mint/boat-tugboat/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 70786
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-tugboat/preview_image.webp"
+    },
+    "boat-yacht": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7apbb265a23jmfswtc8qaeq98d4wz1"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "yacht-q98d4wz1-original.glb",
+          "localPath": "public/assets/mint/boat-yacht/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 906388,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "yacht-q98d4wz1-preview.webp",
+          "localPath": "public/assets/mint/boat-yacht/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 61042
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/boat-yacht/preview_image.webp"
+    },
+    "channel-buoy": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks76891dtj5yptqtj48tr3ez3x8d5jqy"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "channel-buoy-3x8d5jqy-original.glb",
+          "localPath": "public/assets/mint/channel-buoy/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 651036,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "channel-buoy-3x8d5jqy-preview.webp",
+          "localPath": "public/assets/mint/channel-buoy/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 53638
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/channel-buoy/preview_image.webp"
+    },
+    "debris-log": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks75ycbprk9vtvb4p6y280jp018d48n2"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "driftwood-log-018d48n2-original.glb",
+          "localPath": "public/assets/mint/debris-log/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 738160,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "driftwood-log-018d48n2-preview.webp",
+          "localPath": "public/assets/mint/debris-log/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 38674
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/debris-log/preview_image.webp"
+    },
+    "debris-pot": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks79rck0y20x1terh6a9d8syrh8d55pk"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "crab-pot-buoy-rh8d55pk-original.glb",
+          "localPath": "public/assets/mint/debris-pot/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 1341808,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "crab-pot-buoy-rh8d55pk-preview.webp",
+          "localPath": "public/assets/mint/debris-pot/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 197636
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/debris-pot/preview_image.webp"
+    },
+    "gate-marker": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks75zw5b0e2ntg3jbj55mg3kqn8d4kzz"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "channel-gate-marker-qn8d4kzz-original.glb",
+          "localPath": "public/assets/mint/gate-marker/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 800612,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "channel-gate-marker-qn8d4kzz-preview.webp",
+          "localPath": "public/assets/mint/gate-marker/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 26240
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/gate-marker/preview_image.webp"
+    },
+    "harbor-dock": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks70b04q7fz8mf494jz6jtabwn8d55kw"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "harbor-dock-wn8d55kw-original.glb",
+          "localPath": "public/assets/mint/harbor-dock/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 1040572,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "harbor-dock-wn8d55kw-preview.webp",
+          "localPath": "public/assets/mint/harbor-dock/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 57464
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/harbor-dock/preview_image.webp"
+    },
+    "sea-dolphin": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks77f5sf35d3kv8q79mntpngc18d4s8q"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "dolphin-c18d4s8q-original.glb",
+          "localPath": "public/assets/mint/sea-dolphin/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 491196,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "dolphin-c18d4s8q-preview.webp",
+          "localPath": "public/assets/mint/sea-dolphin/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 23848
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/sea-dolphin/preview_image.webp"
+    },
+    "sea-fish": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks7ed15bqbte4kcnjvky1k9rgx8d4zp0"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "fish-gx8d4zp0-original.glb",
+          "localPath": "public/assets/mint/sea-fish/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 781520,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "fish-gx8d4zp0-preview.webp",
+          "localPath": "public/assets/mint/sea-fish/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 34138
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/sea-fish/preview_image.webp"
+    },
+    "sea-whale": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "model",
+        "assetId": "ks79h2rt17s57y235zpj331q3n8d5wey"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "original_glb": {
+          "artifactId": "original_glb",
+          "role": "canonical_model",
+          "format": "glb",
+          "contentType": "model/gltf-binary",
+          "filename": "whale-3n8d5wey-original.glb",
+          "localPath": "public/assets/mint/sea-whale/original_glb.glb",
+          "loaderHint": "gltf",
+          "byteSize": 629296,
+          "extensionsUsed": [],
+          "extensionsRequired": [],
+          "usesDraco": false,
+          "requiresDraco": false,
+          "usesMeshopt": false,
+          "requiresMeshopt": false,
+          "usesKtx2": false,
+          "requiresKtx2": false,
+          "unknownRequiredExtensions": []
+        },
+        "preview_image": {
+          "artifactId": "preview_image",
+          "role": "preview_image",
+          "format": "webp",
+          "contentType": "image/webp",
+          "filename": "whale-3n8d5wey-preview.webp",
+          "localPath": "public/assets/mint/sea-whale/preview_image.webp",
+          "loaderHint": "image",
+          "byteSize": 29350
+        }
+      },
+      "thumbnailUrl": "public/assets/mint/sea-whale/preview_image.webp"
+    },
+    "sfx-ambience": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd72vcp3apdvj1ejbxj953d8bd8d6rxx"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Harbour-Ambience-d8ecfb.mp3",
+          "localPath": "public/assets/mint/sfx-ambience/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 974849,
+          "durationSeconds": 40
+        }
+      }
+    },
+    "sfx-boost": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd77zv7g9hchfrss34rebwkzt98d604h"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Throttle-Surge-3100e8.mp3",
+          "localPath": "public/assets/mint/sfx-boost/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 33062,
+          "durationSeconds": 2
+        }
+      }
+    },
+    "sfx-engine": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd7cdymnp8sev59j6r1b6vd6fh8d7gwn"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Engine-Loop-83785f.mp3",
+          "localPath": "public/assets/mint/sfx-engine/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 129193,
+          "durationSeconds": 8
+        }
+      }
+    },
+    "sfx-fail": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd798ne3kjsrm13fgybv2zemw58d6n9w"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Hull-Breach-Fail-22608a.mp3",
+          "localPath": "public/assets/mint/sfx-fail/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 48945,
+          "durationSeconds": 3
+        }
+      }
+    },
+    "sfx-gate-clear": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd78mtvtm4dy5t0jj81pmvpwhx8d6ezn"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Gate-Cleared-b83c2b.mp3",
+          "localPath": "public/assets/mint/sfx-gate-clear/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 24703,
+          "durationSeconds": 1.5
+        }
+      }
+    },
+    "sfx-gate-miss": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd78an921gp314nftc5w5gs4qn8d6hfc"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Gate-Missed-0bf3dc.mp3",
+          "localPath": "public/assets/mint/sfx-gate-miss/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 24703,
+          "durationSeconds": 1.5
+        }
+      }
+    },
+    "sfx-impact": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd71evqv5e5x56rgdxdf7x01w98d78h8"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Hull-Impact-7f24a3.mp3",
+          "localPath": "public/assets/mint/sfx-impact/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 33062,
+          "durationSeconds": 2
+        }
+      }
+    },
+    "sfx-moored": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd71rrbsvfqpakhm4pf9fsjarn8d6mnq"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Moored-Success-f720a5.mp3",
+          "localPath": "public/assets/mint/sfx-moored/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 56886,
+          "durationSeconds": 3.5
+        }
+      }
+    },
+    "sfx-water": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd76swbacj7wzmjk88r4a0gszx8d7pr7"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Hull-Water-Wake-85a42d.mp3",
+          "localPath": "public/assets/mint/sfx-water/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 129193,
+          "durationSeconds": 8
+        }
+      }
+    },
+    "sfx-whale": {
+      "source": {
+        "manifestVersion": 1,
+        "kind": "asset",
+        "assetType": "audio",
+        "assetId": "xd7fkvdftttbn5b836t6k2pgxs8d7c6r"
+      },
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "mode": "local_files",
+      "artifacts": {
+        "audio_file": {
+          "artifactId": "audio_file",
+          "role": "audio",
+          "format": "mp3",
+          "contentType": "audio/mpeg",
+          "filename": "Whale-Blow-c8630f.mp3",
+          "localPath": "public/assets/mint/sfx-whale/audio_file.mp3",
+          "loaderHint": "audio",
+          "byteSize": 65245,
+          "durationSeconds": 4
+        }
+      }
+    }
+  }
+}

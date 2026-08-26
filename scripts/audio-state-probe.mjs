@@ -1,0 +1,14 @@
+import { chromium } from '@playwright/test';
+const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
+const page = await browser.newPage();
+await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.waitForTimeout(2500);
+const before = await page.evaluate(() => window.__THREE_GAME_TEST_HOOKS__.audioState());
+await page.click('#play-button');
+await page.waitForTimeout(3000);
+const playing = await page.evaluate(() => window.__THREE_GAME_TEST_HOOKS__.audioState());
+await page.click('#mute-button');
+await page.waitForTimeout(500);
+const muted = await page.evaluate(() => window.__THREE_GAME_TEST_HOOKS__.audioState());
+console.log(JSON.stringify({ before, playing, muted }, null, 2));
+await browser.close();
