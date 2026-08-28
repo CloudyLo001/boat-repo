@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test';
 const levels = process.argv[2] ? process.argv[2].split(',').map(Number) : [0, 1, 2, 3, 4, 5, 6, 7, 8];
 const browser = await chromium.launch();
 const page = await browser.newPage();
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 for (const lvl of levels) {
   await page.evaluate((n) => window.__THREE_GAME_TEST_HOOKS__.setState(`level:${n}`), lvl);
   await page.waitForTimeout(3200);

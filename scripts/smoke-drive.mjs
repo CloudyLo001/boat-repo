@@ -6,7 +6,7 @@
 // that input changes the right state, not how far the hull got.
 import { chromium } from '@playwright/test';
 
-const url = process.argv[2] ?? 'http://127.0.0.1:5188';
+const url = process.argv[2] ?? (process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188');
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const consoleErrors = [];

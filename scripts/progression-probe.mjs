@@ -7,7 +7,7 @@ const context = await browser.newContext();
 const page = await context.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.waitForTimeout(800);
 
 const order = await page.$$eval('#fleet-grid .fleet-name', (els) => els.map((e) => e.textContent.trim()));

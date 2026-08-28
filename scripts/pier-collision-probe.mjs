@@ -6,7 +6,7 @@ import { chromium } from '@playwright/test';
 const level = process.argv[2] ?? '5';
 const browser = await chromium.launch();
 const page = await browser.newPage();
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 
 const run = (lvl, offsetX) =>
   page.evaluate(

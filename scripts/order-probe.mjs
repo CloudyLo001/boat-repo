@@ -11,7 +11,7 @@ const runs = [];
 for (let i = 0; i < 5; i += 1) {
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+  await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
   await page.waitForTimeout(700);
   runs.push(await readOrder(page));
   await context.close();
@@ -20,7 +20,7 @@ for (let i = 0; i < 5; i += 1) {
 // Persistence + reshuffle inside one run.
 const context = await browser.newContext();
 const page = await context.newPage();
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.waitForTimeout(700);
 const first = await readOrder(page);
 await page.reload({ waitUntil: 'networkidle' });

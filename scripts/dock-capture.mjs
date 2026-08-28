@@ -12,7 +12,7 @@ await page.addInitScript((w) => {
     JSON.stringify({ volume: 0.8, waveIntensity: Number(w), quality: 'high', cameraMode: 'chase' }),
   );
 }, waves);
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.evaluate((n) => window.__THREE_GAME_TEST_HOOKS__.setState(`level:${n}`), level);
 await page.waitForTimeout(3500);
 // Drop the boat into its berth so the chase camera frames the dock.

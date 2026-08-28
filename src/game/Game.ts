@@ -60,6 +60,8 @@ export class Game {
   private readonly ripples: { mesh: THREE.Mesh; age: number }[] = [];
   private readonly hullCorners = Array.from({ length: 6 }, () => new THREE.Vector3());
   private readonly moveInput = new THREE.Vector2();
+  /** Rudder (x) and throttle (y) eased toward the raw input, so keys are not a step function. */
+  private readonly controls = new THREE.Vector2();
   private readonly cameraTarget = new THREE.Vector3();
   private menuAngle = 0;
   /** Shifts every generated course layout; QA can pin it via the seed hook. */
@@ -210,6 +212,7 @@ export class Game {
     this.boat.group.position.set(spawn.x, 0, spawn.z);
     this.boat.heading = Math.PI; // Facing the course.
     this.boat.stop();
+    this.controls.set(0, 0);
 
     this.checkpoint = null;
     this.damage = 0;
@@ -233,6 +236,7 @@ export class Game {
     this.boat.group.position.set(pose.x, 0, pose.z);
     this.boat.heading = pose.heading;
     this.boat.stop();
+    this.controls.set(0, 0);
     this.menuAngle = 0;
   }
 
@@ -314,8 +318,13 @@ export class Game {
 
   private updatePlaying(delta: number, waveTime: number): void {
     this.input.readMovement(this.moveInput);
-    const throttle = -this.moveInput.y;
-    const rudder = this.moveInput.x;
+    // A key is either down or up, but a throttle lever and a rudder are not.
+    // Ramping them gives the hull a continuous demand to answer, which is what
+    // turns an on/off tap into a smooth surge or a rolled-in turn.
+    this.controls.x += (this.moveInput.x - this.controls.x) * (1 - Math.exp(-delta / 0.14));
+    this.controls.y += (-this.moveInput.y - this.controls.y) * (1 - Math.exp(-delta / 0.22));
+    const throttle = this.controls.y;
+    const rudder = this.controls.x;
     const boosting = this.input.isBoostHeld();
 
     this.simulateStep(delta, throttle, rudder, boosting);
@@ -643,6 +652,7 @@ export class Game {
     this.boat.group.position.set(checkpoint.x, 0, checkpoint.z);
     this.boat.heading = checkpoint.heading;
     this.boat.stop();
+    this.controls.set(0, 0);
     this.elapsed = checkpoint.elapsed;
     this.damage = checkpoint.damage;
     this.course.restoreProgress(checkpoint.progress);

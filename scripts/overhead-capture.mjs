@@ -11,7 +11,7 @@ await page.addInitScript(() => {
     JSON.stringify({ volume: 0.8, waveIntensity: 1, quality: 'high', cameraMode: 'high' }),
   );
 });
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.evaluate((n) => window.__THREE_GAME_TEST_HOOKS__.setState(`level:${n}`), level);
 await page.waitForTimeout(4200);
 await page.screenshot({ path: out });

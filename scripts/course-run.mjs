@@ -9,7 +9,7 @@ const page = await browser.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.evaluate((n) => window.__THREE_GAME_TEST_HOOKS__.setState(/^[0-9]+$/.test(String(n)) ? `level:${n}` : `boat:${n}`), level);
 await page.waitForTimeout(6000);
 

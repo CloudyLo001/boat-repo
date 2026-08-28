@@ -8,7 +8,7 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
 const errors = [];
 page.on('console', (msg) => msg.type() === 'error' && errors.push(msg.text()));
 page.on('pageerror', (err) => errors.push(String(err)));
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.evaluate((n) => window.__THREE_GAME_TEST_HOOKS__.setState(/^\d+$/.test(String(n)) ? `level:${n}` : `boat:${n}`), level);
 await page.waitForTimeout(Number(wait));
 await page.screenshot({ path: out });

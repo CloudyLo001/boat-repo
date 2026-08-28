@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const page = await browser.newPage();
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.waitForTimeout(2500);
 const before = await page.evaluate(() => window.__THREE_GAME_TEST_HOOKS__.audioState());
 await page.click('#play-button');

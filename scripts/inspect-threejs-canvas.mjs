@@ -16,7 +16,7 @@ const RENDER_BUDGETS = {
 
 function parseArgs(argv) {
   const args = {
-    url: 'http://127.0.0.1:5188',
+    url: (process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'),
     out: 'artifacts/canvas-inspection',
     mobile: false,
     wait: 750,

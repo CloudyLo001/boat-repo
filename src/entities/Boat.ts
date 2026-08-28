@@ -19,6 +19,13 @@ export class Boat {
   speed = 0;
   private visual: THREE.Object3D;
   private bobTime = 0;
+  /** Smoothed hull attitude. The wave samples are the target, not the pose. */
+  private heave = 0;
+  private pitch = 0;
+  private roll = 0;
+  /** Along-bow acceleration and yaw rate from the last physics step, for trim. */
+  private surge = 0;
+  private yawRate = 0;
 
   constructor(readonly spec: BoatSpec) {
     this.visual = this.createBlockoutHull();
@@ -83,6 +90,7 @@ export class Boat {
   stop(): void {
     this.velocity.set(0, 0);
     this.speed = 0;
+    this.resetAttitude();
   }
 
   /** Scale all momentum, e.g. when scraping a buoy. */
@@ -134,11 +142,13 @@ export class Boat {
     along = THREE.MathUtils.clamp(along, -topSpeed * 0.45, topSpeed);
 
     this.velocity.set(along * sin + across * cos, along * cos - across * sin);
+    this.surge = delta > 0 ? (along - this.speed) / delta : 0;
     this.speed = along;
 
     // Rudder only bites with way on; reverses with sternway like a real hull.
     const way = THREE.MathUtils.clamp(along / (spec.maxSpeed * 0.35), -1, 1);
-    this.heading -= rudder * spec.turnRate * way * delta;
+    this.yawRate = -rudder * spec.turnRate * way;
+    this.heading += this.yawRate * delta;
 
     this.group.position.x += this.velocity.x * delta;
     this.group.position.z += this.velocity.y * delta;
@@ -163,13 +173,42 @@ export class Boat {
     const port = water.heightAt(x - cos * halfB, z + sin * halfB, time);
     const starboard = water.heightAt(x + cos * halfB, z - sin * halfB, time);
 
-    // Big hulls average the swell out; small boats feel every ripple.
-    const response = THREE.MathUtils.clamp(9 / spec.length, 0.08, 1) * settleFactor;
+    // Big hulls average the swell out; small boats feel every ripple. Planing
+    // hulls skim the tops rather than tracing them, so the faster the boat
+    // runs the less of the swell it takes on.
+    const pace = THREE.MathUtils.clamp(Math.abs(this.speed) / spec.maxSpeed, 0, 1);
+    const response =
+      THREE.MathUtils.clamp(9 / spec.length, 0.08, 1) * settleFactor * (1 - 0.5 * pace);
     const center = (bow + stern + port + starboard) / 4;
-    this.group.position.y = center * response;
+
+    // Throttle lifts the bow and turns lay the hull over. Both are what a boat
+    // under way actually does, and both smooth the moment thrust or rudder
+    // changes instead of letting it read as a step.
+    const trim = -THREE.MathUtils.clamp(this.surge / spec.accel, -1, 1) * 0.05;
+    const bank = -THREE.MathUtils.clamp(this.yawRate * this.speed * 0.02, -1, 1) * 0.16;
+
+    // Chase the wave-following pose rather than snapping to it: sampling a
+    // moving hull against a moving surface is noisy, and the noise is what
+    // reads as judder at speed.
+    const follow = 1 - Math.exp(-delta * 7);
+    const attitude = 1 - Math.exp(-delta * 5);
+    this.heave += (center * response - this.heave) * follow;
+    this.pitch += (Math.atan2(stern - bow, halfL * 2) * response + trim - this.pitch) * attitude;
+    this.roll += (Math.atan2(starboard - port, halfB * 2) * response + bank - this.roll) * attitude;
+
+    this.group.position.y = this.heave;
     this.group.rotation.y = this.heading;
-    this.group.rotation.x = Math.atan2(stern - bow, halfL * 2) * response;
-    this.group.rotation.z = Math.atan2(port - starboard, halfB * 2) * response;
+    this.group.rotation.x = this.pitch;
+    this.group.rotation.z = this.roll;
+  }
+
+  /** Drop the smoothed attitude so a respawned hull does not ease in from the last pose. */
+  resetAttitude(): void {
+    this.heave = 0;
+    this.pitch = 0;
+    this.roll = 0;
+    this.surge = 0;
+    this.yawRate = 0;
   }
 
   dispose(): void {

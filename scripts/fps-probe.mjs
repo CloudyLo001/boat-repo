@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test';
 const level = process.argv[2] ?? '0';
 const browser = await chromium.launch();
 const page = await browser.newPage();
-await page.goto('http://127.0.0.1:5188', { waitUntil: 'networkidle' });
+await page.goto((process.env.BOAT_PARK_URL ?? 'http://127.0.0.1:5188'), { waitUntil: 'networkidle' });
 await page.evaluate((n) => window.__THREE_GAME_TEST_HOOKS__.setState(`level:${n}`), level);
 await page.waitForTimeout(4000);
 const a = await page.evaluate(() => window.__THREE_GAME_DIAGNOSTICS__.frame);
