@@ -78,22 +78,28 @@ const WAKE_PROFILE = `
     float middleU = clamp(beam * 1.1 / max(halfWidth, 0.001), 0.03, 1.0);
     float middle = exp(-pow(u / middleU, 2.0));
 
-    float size = min(0.8, 0.17 * sqrt(beam));
+    float size = min(0.45, 0.17 * sqrt(beam));
     float way = clamp(speed / 12.0, 0.0, 1.0);
     // Nothing right at the stern: the hull is standing there.
     float born = smoothstep(0.0, 0.4, age);
     float spent = exp(-age / 6.0) * (1.0 - smoothstep(LIFE * 0.7, LIFE, age));
 
-    return size * way * born * spent * (arm * 1.25 + transverse * 0.3 + middle * 0.6);
+    return size * way * born * spent * (arm * 1.25 + transverse * 0.15 + middle * 0.6);
   }
 
   float wakeFoam(float age, float u, float speed, float beam, vec2 world) {
     float halfWidth = wakeHalfWidth(age, speed, beam);
     float across = abs(u);
 
-    // Three separate things, not one filled wedge: the breaking arms, the
-    // boiling trail down the middle, and torn patches drifting between them.
-    float arm = exp(-pow((across - ARM_U) / 0.11, 2.0));
+    // Two things, with open water between them: the wash boiling astern, and
+    // the wake — the arms riding the edge of the wedge.
+    //
+    // The arms hold a width in metres rather than a share of the wedge, so as
+    // the V opens they stay lines instead of smearing out with it. They are
+    // allowed to thicken slowly with age, or the far end goes sub-pixel and
+    // crawls.
+    float armU = clamp((beam * 1.2 + age * 0.8) / max(halfWidth, 0.001), 0.02, 0.5);
+    float arm = exp(-pow((across - ARM_U) / armU, 2.0));
     float middleU = clamp(beam * 0.8 / max(halfWidth, 0.001), 0.02, 0.9);
     float middle = exp(-pow(u / middleU, 2.0));
 
@@ -105,18 +111,17 @@ const WAKE_PROFILE = `
     float grain = foamFbm(world * 0.3);
     float broken = smoothstep(0.4, 0.68, grain * 0.5 + streak * 0.5);
 
-    // The boil astern is violent and short-lived over a longer, softer tail.
-    float churn = middle * (exp(-age / 1.1) * 1.5 + exp(-age / 6.5) * 0.45);
-    float crest = arm * exp(-age / 7.5) * 0.95;
-    // Transverse crests strung between the arms — the cross-hatching that fills
-    // the wedge in behind a boat under way.
-    float ripple = 0.45 + 0.55 * sin((age * 0.9 - u * u * 0.4) * 6.2831853);
-    float inside = smoothstep(1.0, 0.25, across) * exp(-age / 2.4) * 0.6 * broken * ripple;
+    // The wash is violent and short-lived over a longer, softer tail.
+    float wash = middle * (exp(-age / 1.1) * 1.5 + exp(-age / 6.5) * 0.45);
+    // The wake carries the whole length of the trail, only softening with
+    // distance — that reach is what lets the V read as a V. It is also torn up
+    // far less than the wash, so it stays a line rather than a dashed one.
+    float crest = arm * mix(1.15, 0.5, smoothstep(0.0, LIFE * 0.85, age));
 
-    float mass = (churn + crest) * mix(0.18, 1.1, broken) + inside;
+    float mass = wash * mix(0.18, 1.1, broken) + crest * mix(0.6, 1.15, broken);
     float born = smoothstep(0.0, 0.1, age);
-    float spent = 1.0 - smoothstep(LIFE * 0.45, LIFE, age);
-    float edge = 1.0 - smoothstep(0.86, 1.0, across);
+    float spent = 1.0 - smoothstep(LIFE * 0.72, LIFE, age);
+    float edge = 1.0 - smoothstep(0.9, 1.0, across);
     float way = clamp((speed - ${MIN_SPEED.toFixed(1)}) / 6.0, 0.0, 1.0);
     return clamp(mass, 0.0, 0.95) * born * spent * edge * way;
   }`;
@@ -184,6 +189,7 @@ export class Wake implements SurfaceDisturbance {
           uTime: { value: 0 },
           uIntensity: { value: 1 },
           uBeam: { value: 2 },
+          uCeiling: { value: 1e9 },
           uSun: { value: new THREE.Vector3(-120, 180, 90).normalize() },
           uLit: { value: new THREE.Color('#ffffff') },
           uShade: { value: new THREE.Color('#a8c4d2') },
@@ -197,6 +203,7 @@ export class Wake implements SurfaceDisturbance {
         uniform float uTime;
         uniform float uIntensity;
         uniform float uBeam;
+        uniform float uCeiling;
 
         varying vec3 vSurfaceNormal;
         varying vec2 vWorld;
@@ -217,7 +224,9 @@ export class Wake implements SurfaceDisturbance {
           float relief = wakeRelief(age, aAcross, speed, uBeam);
           // Sits on the ocean as it is drawn, faceting included, then a hair
           // above so foam never sinks through the surface it belongs to.
-          float height = sampleSurface(world, uTime, uIntensity) + relief + 0.05;
+          // Never above the dock deck, whatever the swell and the crest add
+          // up to: foam drawn over the planking reads as a flooded pier.
+          float height = min(sampleSurface(world, uTime, uIntensity) + relief + 0.05, uCeiling);
 
           // Slope of the wake, by finite difference in ribbon coordinates, plus
           // the slope of the water carrying it.
@@ -293,6 +302,11 @@ export class Wake implements SurfaceDisturbance {
   configure(beam: number): void {
     this.beam = beam;
     this.material.uniforms.uBeam.value = beam;
+  }
+
+  /** Highest this foam may ever be drawn, in world units. */
+  setCeiling(height: number): void {
+    this.material.uniforms.uCeiling.value = height;
   }
 
   /** Clear the trail — a respawn or a level change should not drag one along. */
@@ -380,7 +394,7 @@ export class Wake implements SurfaceDisturbance {
   }
 
   maxRelief(): number {
-    return Math.min(0.8, 0.17 * Math.sqrt(this.beam)) * 2.15;
+    return Math.min(0.45, 0.17 * Math.sqrt(this.beam)) * 2.0;
   }
 
   dispose(): void {
@@ -462,10 +476,10 @@ function wakeRelief(age: number, u: number, speed: number, beam: number): number
   const middleU = THREE.MathUtils.clamp((beam * 1.1) / Math.max(halfWidth, 0.001), 0.03, 1);
   const middle = Math.exp(-((u / middleU) ** 2));
 
-  const size = Math.min(0.8, 0.17 * Math.sqrt(beam));
+  const size = Math.min(0.45, 0.17 * Math.sqrt(beam));
   const way = THREE.MathUtils.clamp(speed / 12, 0, 1);
   const born = THREE.MathUtils.smoothstep(age, 0, 0.4);
   const spent = Math.exp(-age / 6) * (1 - THREE.MathUtils.smoothstep(age, LIFE * 0.7, LIFE));
 
-  return size * way * born * spent * (arm * 1.25 + transverse * 0.3 + middle * 0.6);
+  return size * way * born * spent * (arm * 1.25 + transverse * 0.15 + middle * 0.6);
 }

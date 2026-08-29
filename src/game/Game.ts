@@ -305,7 +305,12 @@ export class Game {
   private loadHarborModels(): void {
     attachGateModel(this.course);
     loadMintModel('harbor-dock')
-      .then((model) => this.harbor.setDockModel(model, 64, 15))
+      .then((model) => {
+        this.harbor.setDockModel(model, 64, 15);
+        // The generated dock sits at its own height, so the foam ceiling has to
+        // be taken again once it replaces the blockout.
+        this.applyFoamCeiling();
+      })
       .catch((error) => console.warn('Generated dock unavailable; keeping blockout.', error));
     loadMintModel('channel-buoy')
       .then((model) => this.harbor.setBuoyModel(model))
@@ -706,6 +711,21 @@ export class Game {
     this.wake.configure(this.boat.spec.beam);
     this.wake.reset();
     this.splashes.reset();
+    this.applyFoamCeiling();
+  }
+
+  /**
+   * Cap every foam layer just under the dock deck. Wake crests and impact
+   * splashes both stand proud of the water, and over the planking that reads as
+   * a flooded pier — so the dock's own height, measured from the geometry
+   * rather than assumed, is the ceiling.
+   */
+  private applyFoamCeiling(): void {
+    const deck = this.harbor.dockBounds().max.y;
+    const ceiling = Number.isFinite(deck) ? deck - 0.15 : 1e9;
+    this.wake.setCeiling(ceiling);
+    this.splashes.setCeiling(ceiling);
+    this.seaHazards.setFoamCeiling(ceiling);
   }
 
   private spawnSplash(x: number, z: number, radius: number): void {

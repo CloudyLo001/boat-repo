@@ -38,6 +38,7 @@ export class SeaHazards {
   private readonly props: FloatingProp[] = [];
   private readonly traffic: TrafficBoat[] = [];
   private readonly wakes: Wake[] = [];
+  private foamCeiling = 1e9;
   private bounds = { minX: -400, maxX: 400, minZ: 0, maxZ: 1200 };
   private gates: readonly Gate[] = [];
   private layoutToken = 0;
@@ -125,6 +126,12 @@ export class SeaHazards {
       const stern = boat.spec.length * 0.38 * boat.headingX;
       boat.wake.update(delta, time, boat.x - stern, boat.z, heading, delta > 0 ? boat.speed : 0);
     }
+  }
+
+  /** Cap traffic foam under the dock deck, same as the player's. */
+  setFoamCeiling(height: number): void {
+    this.foamCeiling = height;
+    for (const wake of this.wakes) wake.setCeiling(height);
   }
 
   dispose(): void {
@@ -283,6 +290,7 @@ export class SeaHazards {
       // beam — a hull under way without one reads as sliding on glass.
       const wake = new Wake(this.water);
       wake.configure(traffic.beam);
+      wake.setCeiling(this.foamCeiling);
       this.group.add(wake.mesh);
       this.wakes.push(wake);
 

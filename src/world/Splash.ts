@@ -68,6 +68,7 @@ export class Splashes {
         {
           uTime: { value: 0 },
           uIntensity: { value: 1 },
+          uCeiling: { value: 1e9 },
           uLit: { value: new THREE.Color('#ffffff') },
           uShade: { value: new THREE.Color('#b6cedb') },
         },
@@ -78,6 +79,7 @@ export class Splashes {
 
         uniform float uTime;
         uniform float uIntensity;
+        uniform float uCeiling;
 
         varying vec3 vBurst;
         varying vec2 vWorld;
@@ -107,9 +109,12 @@ export class Splashes {
           float spread = scale * (0.45 + progress * 1.7) * ragged;
           vec2 world = aBurst.xy + dir * (radius * spread) * alive;
 
-          // Water thrown up on impact, dropping back as it spreads.
-          float bloom = (1.0 - radius) * exp(-progress * 3.5) * scale * 0.22;
-          float height = sampleSurface(world, uTime, uIntensity) + bloom + 0.06;
+          // Water thrown up on impact, dropping back as it spreads. Capped in
+          // metres, not scaled with the hull: a ship ten times the size of a
+          // dinghy does not throw foam ten times as high, and unbounded it
+          // stood metres proud of the dock and up the hull's own side.
+          float bloom = (1.0 - radius) * exp(-progress * 3.5) * min(scale * 0.22, 0.5);
+          float height = min(sampleSurface(world, uTime, uIntensity) + bloom + 0.06, uCeiling);
 
           // Shape and grain are resolved per pixel; the fan is far too coarse
           // to carry either.
@@ -172,6 +177,11 @@ export class Splashes {
       this.burst[at + 3] = radius;
     }
     this.geometry.getAttribute('aBurst').needsUpdate = true;
+  }
+
+  /** Highest this foam may ever be drawn, in world units. */
+  setCeiling(height: number): void {
+    this.material.uniforms.uCeiling.value = height;
   }
 
   update(time: number): void {
