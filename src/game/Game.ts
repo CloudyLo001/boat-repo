@@ -721,8 +721,10 @@ export class Game {
    * rather than assumed, is the ceiling.
    */
   private applyFoamCeiling(): void {
-    const deck = this.harbor.dockBounds().max.y;
-    const ceiling = Number.isFinite(deck) ? deck - 0.15 : 1e9;
+    // The deck itself, not the dock's bounding box — that reaches the tops of
+    // the bollards standing on the planking, well above the surface foam has
+    // to stay under.
+    const ceiling = this.harbor.deckHeight - 0.15;
     this.wake.setCeiling(ceiling);
     this.splashes.setCeiling(ceiling);
     this.seaHazards.setFoamCeiling(ceiling);
@@ -924,7 +926,9 @@ export class Game {
           boatY: this.boat.group.position.y,
           usingModel: this.boat.hasGeneratedModel,
           dockBottom: dock.min.y,
-          dockTop: dock.max.y,
+          // The walking surface, not the bounding box — that reaches the tops
+          // of the bollards, and `deckClearsCrest` is a claim about the deck.
+          dockTop: this.harbor.deckHeight,
           maxWave: this.water.maxAmplitude(),
         };
       },

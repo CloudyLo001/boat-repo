@@ -69,47 +69,42 @@ const PILING = new THREE.MeshStandardMaterial({ color: '#4c3826', roughness: 0.9
 const FENDER = new THREE.MeshStandardMaterial({ color: '#1d2430', roughness: 0.82, metalness: 0.04 });
 
 /**
- * Find the top of a pier's walking deck. The deck is the one horizontal band
- * that covers most of the model's footprint — bollards, cleats and posts above
- * it are narrow, and pilings below it are narrower still. Seating the model by
- * its highest vertex instead would sink the deck by the height of a bollard.
+ * Find the top of a pier's walking deck — the surface you would walk on, not
+ * the top of the bollard standing on it.
+ *
+ * Rays are dropped over the footprint and the median first hit taken. Bollards,
+ * cleats and posts cover only a little of the deck, so they never outvote it,
+ * and a deck built from a handful of big quads is found just as reliably as a
+ * finely tessellated one. Measuring how much of the footprint each height band
+ * spans instead fails here: bollards scattered along a quay span nearly all of
+ * it while covering almost none of it, and the deck ends up seated two metres
+ * low with the sea washing over the planking.
  */
 function findDeckTop(model: THREE.Object3D): number {
   model.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(model);
   const size = bounds.getSize(new THREE.Vector3());
-  const BINS = 32;
-  const binHeight = size.y / BINS;
-  if (binHeight <= 0) return bounds.max.y;
+  const raycaster = new THREE.Raycaster();
+  const down = new THREE.Vector3(0, -1, 0);
+  const origin = new THREE.Vector3();
+  const startY = bounds.max.y + Math.max(size.x, size.z) + 1;
 
-  const minX = new Array<number>(BINS).fill(Infinity);
-  const maxX = new Array<number>(BINS).fill(-Infinity);
-  const minZ = new Array<number>(BINS).fill(Infinity);
-  const maxZ = new Array<number>(BINS).fill(-Infinity);
-  const vertex = new THREE.Vector3();
-
-  model.traverse((child) => {
-    if (!(child instanceof THREE.Mesh)) return;
-    const position = (child.geometry as THREE.BufferGeometry).getAttribute('position');
-    if (!position) return;
-    const stride = Math.max(1, Math.floor(position.count / 6000));
-    for (let i = 0; i < position.count; i += stride) {
-      vertex.fromBufferAttribute(position, i).applyMatrix4(child.matrixWorld);
-      const bin = THREE.MathUtils.clamp(Math.floor((vertex.y - bounds.min.y) / binHeight), 0, BINS - 1);
-      if (vertex.x < minX[bin]) minX[bin] = vertex.x;
-      if (vertex.x > maxX[bin]) maxX[bin] = vertex.x;
-      if (vertex.z < minZ[bin]) minZ[bin] = vertex.z;
-      if (vertex.z > maxZ[bin]) maxZ[bin] = vertex.z;
+  const GRID = 11;
+  const hits: number[] = [];
+  for (let i = 0; i < GRID; i += 1) {
+    for (let j = 0; j < GRID; j += 1) {
+      // Inset from the rim: rays down the very edge catch fenders and pilings.
+      const alongX = 0.08 + (i / (GRID - 1)) * 0.84;
+      const alongZ = 0.08 + (j / (GRID - 1)) * 0.84;
+      origin.set(bounds.min.x + size.x * alongX, startY, bounds.min.z + size.z * alongZ);
+      raycaster.set(origin, down);
+      const hit = raycaster.intersectObject(model, true)[0];
+      if (hit) hits.push(hit.point.y);
     }
-  });
-
-  const fullArea = Math.max(size.x * size.z, 1e-6);
-  for (let bin = BINS - 1; bin >= 0; bin -= 1) {
-    if (maxX[bin] < minX[bin]) continue;
-    const coverage = ((maxX[bin] - minX[bin]) * (maxZ[bin] - minZ[bin])) / fullArea;
-    if (coverage >= 0.5) return bounds.min.y + (bin + 1) * binHeight;
   }
-  return bounds.max.y;
+  if (hits.length < 8) return bounds.max.y;
+  hits.sort((a, b) => a - b);
+  return hits[Math.floor(hits.length / 2)];
 }
 
 /**
@@ -120,6 +115,8 @@ function findDeckTop(model: THREE.Object3D): number {
  */
 export class Harbor {
   readonly group = new THREE.Group();
+  /** Height of the walking deck. Foam drawn above this reads as a flooded pier. */
+  readonly deckHeight = DECK_HEIGHT;
   readonly buoys: BuoyInstance[] = [];
   /** Piers and moored hulls the player has to thread between. */
   readonly obstacles: Obstacle[] = [];
