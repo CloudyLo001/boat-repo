@@ -5,6 +5,7 @@ import { disposeObject3D } from '../utils/dispose';
 import { loadMintModel } from '../assets/ModelLibrary';
 import { seatHullOnWater } from './modelSeating';
 import { createHazard, type CircleHazard } from './hazards';
+import { Wake } from './Wake';
 import type { Gate } from './Course';
 
 interface FloatingProp {
@@ -23,6 +24,7 @@ interface TrafficBoat {
   headingX: number;
   speed: number;
   hazard: CircleHazard;
+  wake: Wake;
 }
 
 /**
@@ -35,9 +37,12 @@ export class SeaHazards {
 
   private readonly props: FloatingProp[] = [];
   private readonly traffic: TrafficBoat[] = [];
+  private readonly wakes: Wake[] = [];
   private bounds = { minX: -400, maxX: 400, minZ: 0, maxZ: 1200 };
   private gates: readonly Gate[] = [];
   private layoutToken = 0;
+
+  constructor(private readonly water: Water) {}
 
   configure(
     spec: BoatSpec,
@@ -105,6 +110,8 @@ export class SeaHazards {
       if (boat.x < this.bounds.minX || boat.x > this.bounds.maxX) {
         boat.headingX *= -1;
         boat.x = THREE.MathUtils.clamp(boat.x, this.bounds.minX, this.bounds.maxX);
+        // Turning on the spot would fold the ribbon back through itself.
+        boat.wake.reset();
       }
       const surface = water.heightAt(boat.x, boat.z, time);
       const response = THREE.MathUtils.clamp(9 / boat.spec.length, 0.08, 1) * 0.8;
@@ -113,10 +120,16 @@ export class SeaHazards {
       boat.group.rotation.z = Math.sin(time * 0.7 + boat.z) * 0.03 * response;
       boat.hazard.x = boat.x;
       boat.hazard.z = boat.z;
+
+      const heading = boat.headingX > 0 ? Math.PI / 2 : -Math.PI / 2;
+      const stern = boat.spec.length * 0.38 * boat.headingX;
+      boat.wake.update(delta, time, boat.x - stern, boat.z, heading, delta > 0 ? boat.speed : 0);
     }
   }
 
   dispose(): void {
+    for (const wake of this.wakes) wake.dispose();
+    this.wakes.length = 0;
     disposeObject3D(this.group);
   }
 
@@ -265,6 +278,14 @@ export class SeaHazards {
         label: traffic.name,
       });
       this.hazards.push(hazard);
+
+      // Working boats leave the same wake the player does, scaled to their own
+      // beam — a hull under way without one reads as sliding on glass.
+      const wake = new Wake(this.water);
+      wake.configure(traffic.beam);
+      this.group.add(wake.mesh);
+      this.wakes.push(wake);
+
       this.traffic.push({
         group,
         spec: traffic,
@@ -273,6 +294,7 @@ export class SeaHazards {
         headingX,
         speed: 2.5 + random() * 3.5,
         hazard,
+        wake,
       });
 
       loadMintModel(traffic.mintKey)
@@ -291,6 +313,10 @@ export class SeaHazards {
   }
 
   private clear(): void {
+    // Wakes first: each one is registered with the ocean, and a stale one would
+    // go on being sampled by every height query for the rest of the run.
+    for (const wake of this.wakes) wake.dispose();
+    this.wakes.length = 0;
     for (const child of [...this.group.children]) {
       this.group.remove(child);
       disposeObject3D(child);

@@ -10,6 +10,8 @@ import { Harbor } from '../world/Harbor';
 import { Course, attachGateModel } from '../world/Course';
 import { Wildlife } from '../world/Wildlife';
 import { SeaHazards } from '../world/SeaHazards';
+import { Wake } from '../world/Wake';
+import { Splashes } from '../world/Splash';
 import type { CircleHazard } from '../world/hazards';
 import { FLEET, type BoatSpec } from './fleet';
 import { loadSettings, qualityMaxDpr, type GameSettings } from './settings';
@@ -35,7 +37,9 @@ export class Game {
   private readonly harbor = new Harbor();
   private readonly course = new Course();
   private readonly wildlife = new Wildlife();
-  private readonly seaHazards = new SeaHazards();
+  private readonly seaHazards = new SeaHazards(this.water);
+  private readonly wake = new Wake(this.water);
+  private readonly splashes = new Splashes(this.water);
   private readonly sun: THREE.DirectionalLight;
   private readonly loop = new Loop(
     (delta, elapsed) => this.update(delta, elapsed),
@@ -56,8 +60,10 @@ export class Game {
   private mooringPose = { x: 0, z: 0, heading: Math.PI / 2 };
   private readonly mooringVelocity = new THREE.Vector3();
   private mooringHeadingVel = 0;
+  /** Paces the settling foam while a hull moors. */
   private rippleTimer = 0;
-  private readonly ripples: { mesh: THREE.Mesh; age: number }[] = [];
+  /** The ocean's clock, held so an impact anywhere can stamp its splash. */
+  private waveTime = 0;
   private readonly hullCorners = Array.from({ length: 6 }, () => new THREE.Vector3());
   private readonly moveInput = new THREE.Vector2();
   /** Rudder (x) and throttle (y) eased toward the raw input, so keys are not a step function. */
@@ -137,10 +143,8 @@ export class Game {
     this.course.dispose();
     this.wildlife.dispose();
     this.seaHazards.dispose();
-    for (const ripple of this.ripples) {
-      ripple.mesh.geometry.dispose();
-      (ripple.mesh.material as THREE.Material).dispose();
-    }
+    this.wake.dispose();
+    this.splashes.dispose();
     this.renderer.dispose();
     window.__THREE_GAME_DIAGNOSTICS__ = undefined;
     window.__THREE_GAME_TEST_HOOKS__ = undefined;
@@ -213,6 +217,7 @@ export class Game {
     this.boat.heading = Math.PI; // Facing the course.
     this.boat.stop();
     this.controls.set(0, 0);
+    this.resetWake();
 
     this.checkpoint = null;
     this.damage = 0;
@@ -237,6 +242,7 @@ export class Game {
     this.boat.heading = pose.heading;
     this.boat.stop();
     this.controls.set(0, 0);
+    this.resetWake();
     this.menuAngle = 0;
   }
 
@@ -249,6 +255,7 @@ export class Game {
 
     resizeRenderer(this.renderer, this.camera, qualityMaxDpr(this.settings.quality));
     const waveTime = this.reducedMotion ? 0 : elapsed;
+    this.waveTime = waveTime;
     this.water.update(waveTime);
     this.water.setCenter(this.boat.group.position.x, this.boat.group.position.z);
     this.harbor.update(waveTime, this.water);
@@ -277,7 +284,7 @@ export class Game {
         break;
     }
 
-    this.updateRipples(delta);
+    this.updateWake(delta, waveTime);
     this.updateSun();
     this.publishDiagnostics();
   }
@@ -329,7 +336,6 @@ export class Game {
 
     this.simulateStep(delta, throttle, rudder, boosting);
     this.boat.updateBuoyancy(delta, waveTime, this.water);
-    this.spawnWakeRipples(delta);
 
     const spec = this.boat.spec;
     const inBerth = this.harbor.isInsideBerth(this.boat.group.position.x, this.boat.group.position.z);
@@ -447,7 +453,7 @@ export class Game {
 
     this.rippleTimer -= delta;
     if (this.rippleTimer <= 0) {
-      this.spawnRipple(pos.x, pos.z, this.boat.spec.beam * 1.4);
+      this.spawnSplash(pos.x, pos.z, this.boat.spec.beam * 1.4);
       this.rippleTimer = 0.55;
     }
 
@@ -518,7 +524,7 @@ export class Game {
         pos.x -= (dx / push) * 0.6;
         pos.z -= (dz / push) * 0.6;
         this.boat.dampen(0.6);
-        this.spawnRipple(buoy.x, buoy.z, buoy.radius * 3);
+        this.spawnSplash(buoy.x, buoy.z, buoy.radius * 3);
       }
     }
 
@@ -568,7 +574,7 @@ export class Game {
         const impact = this.impactDamage(closing, 35);
         if (impact > 0) {
           this.applyDamage(impact);
-          this.spawnRipple(corner.x, corner.z, spec.beam * 0.9);
+          this.spawnSplash(corner.x, corner.z, spec.beam * 0.9);
         }
         this.boat.reflect(nx, nz, 0.2);
         break;
@@ -605,7 +611,7 @@ export class Game {
         hazard.touching = true;
         if (hazard.damage > 0) {
           this.applyDamage(hazard.damage);
-          this.spawnRipple(hazard.x, hazard.z, hazard.radius * 1.4);
+          this.spawnSplash(hazard.x, hazard.z, hazard.radius * 1.4);
         }
       }
       this.hazardCallout =
@@ -653,6 +659,7 @@ export class Game {
     this.boat.heading = checkpoint.heading;
     this.boat.stop();
     this.controls.set(0, 0);
+    this.resetWake();
     this.elapsed = checkpoint.elapsed;
     this.damage = checkpoint.damage;
     this.course.restoreProgress(checkpoint.progress);
@@ -694,51 +701,40 @@ export class Game {
     return Math.min(primary, Math.abs(this.angleDelta(current, berth.targetHeading + Math.PI)));
   }
 
-  private spawnWakeRipples(delta: number): void {
-    if (Math.abs(this.boat.speed) < 0.6) return;
-    this.rippleTimer -= delta;
-    if (this.rippleTimer <= 0) {
-      const stern = this.boat.forward.multiplyScalar(-this.boat.spec.length * 0.45);
-      this.spawnRipple(
-        this.boat.group.position.x + stern.x,
-        this.boat.group.position.z + stern.z,
-        this.boat.spec.beam,
-      );
-      this.rippleTimer = 0.8 - Math.min(0.55, Math.abs(this.boat.speed) * 0.06);
-    }
+  /** Clear the trail and bind it to whichever hull is now in the water. */
+  private resetWake(): void {
+    this.wake.configure(this.boat.spec.beam);
+    this.wake.reset();
+    this.splashes.reset();
   }
 
-  private spawnRipple(x: number, z: number, startRadius: number): void {
+  private spawnSplash(x: number, z: number, radius: number): void {
     if (this.reducedMotion) return;
-    const geometry = new THREE.RingGeometry(startRadius, startRadius * 1.12, 40);
-    geometry.rotateX(-Math.PI / 2);
-    const material = new THREE.MeshBasicMaterial({
-      color: '#dfe9ec',
-      transparent: true,
-      opacity: 0.42,
-      depthWrite: false,
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, 0.35, z);
-    this.scene.add(mesh);
-    this.ripples.push({ mesh, age: 0 });
+    this.splashes.spawn(x, z, radius, this.waveTime);
   }
 
-  private updateRipples(delta: number): void {
-    for (let i = this.ripples.length - 1; i >= 0; i -= 1) {
-      const ripple = this.ripples[i];
-      ripple.age += delta;
-      const life = 1.6;
-      const progress = ripple.age / life;
-      ripple.mesh.scale.setScalar(1 + progress * 2.2);
-      (ripple.mesh.material as THREE.MeshBasicMaterial).opacity = 0.42 * (1 - progress);
-      if (progress >= 1) {
-        this.scene.remove(ripple.mesh);
-        ripple.mesh.geometry.dispose();
-        (ripple.mesh.material as THREE.Material).dispose();
-        this.ripples.splice(i, 1);
-      }
+  /**
+   * Lay wake from the transom. The whole trail is one mesh that ages itself, so
+   * this only has to say where the stern is and how much way the hull has on.
+   */
+  private updateWake(delta: number, waveTime: number): void {
+    this.splashes.update(waveTime);
+    if (this.reducedMotion) {
+      // The wave clock is frozen, so ages would be meaningless. Clear the trail
+      // rather than leave a stale one painted on the water.
+      if (this.wake.mesh.visible) this.resetWake();
+      return;
     }
+    const spec = this.boat.spec;
+    const stern = spec.length * 0.38;
+    this.wake.update(
+      delta,
+      waveTime,
+      this.boat.group.position.x - Math.sin(this.boat.heading) * stern,
+      this.boat.group.position.z - Math.cos(this.boat.heading) * stern,
+      this.boat.heading,
+      this.boat.speed,
+    );
   }
 
   private updateChaseCamera(delta: number): void {
@@ -801,6 +797,8 @@ export class Game {
     this.scene.add(sun.target);
 
     this.scene.add(this.water.mesh);
+    this.scene.add(this.wake.mesh);
+    this.scene.add(this.splashes.mesh);
     this.scene.add(this.harbor.group);
     this.scene.add(this.course.group);
     this.scene.add(this.wildlife.group);

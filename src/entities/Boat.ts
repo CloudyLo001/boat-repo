@@ -23,6 +23,11 @@ export class Boat {
   private heave = 0;
   private pitch = 0;
   private roll = 0;
+  /** Attitude from the controls rather than the sea: bow lift and lean into turns. */
+  private trim = 0;
+  private bank = 0;
+  /** How deep the sea can wash over the topsides before it is drawn inboard. */
+  private clearance = 0.05;
   /** Along-bow acceleration and yaw rate from the last physics step, for trim. */
   private surge = 0;
   private yawRate = 0;
@@ -34,7 +39,7 @@ export class Boat {
 
   /** Swap the blockout for a generated model, scaled to the spec length. */
   setModel(model: THREE.Object3D): void {
-    seatHullOnWater(model, this.spec);
+    this.clearance = seatHullOnWater(model, this.spec);
     this.group.remove(this.visual);
     disposeObject3D(this.visual);
     this.visual = model;
@@ -168,38 +173,101 @@ export class Boat {
     const halfL = spec.length * 0.38;
     const halfB = spec.beam * 0.45;
 
-    const bow = water.heightAt(x + sin * halfL, z + cos * halfL, time);
-    const stern = water.heightAt(x - sin * halfL, z - cos * halfL, time);
-    const port = water.heightAt(x - cos * halfB, z + sin * halfB, time);
-    const starboard = water.heightAt(x + cos * halfB, z - sin * halfB, time);
+    const bowX = x + sin * halfL;
+    const bowZ = z + cos * halfL;
+    const sternX = x - sin * halfL;
+    const sternZ = z - cos * halfL;
+    const portX = x - cos * halfB;
+    const portZ = z + sin * halfB;
+    const starboardX = x + cos * halfB;
+    const starboardZ = z - sin * halfB;
 
-    // Big hulls average the swell out; small boats feel every ripple. Planing
-    // hulls skim the tops rather than tracing them, so the faster the boat
-    // runs the less of the swell it takes on.
-    const pace = THREE.MathUtils.clamp(Math.abs(this.speed) / spec.maxSpeed, 0, 1);
-    const response =
-      THREE.MathUtils.clamp(9 / spec.length, 0.08, 1) * settleFactor * (1 - 0.5 * pace);
+    // Sampled at the hull's own length: Water hands back only the part of the
+    // sea a boat this size answers to, so a big ship still rides steady through
+    // chop without the hull having to be sunk into the surface to fake it.
+    const size = spec.length;
+    const bow = water.heightAt(bowX, bowZ, time, size);
+    const stern = water.heightAt(sternX, sternZ, time, size);
+    const port = water.heightAt(portX, portZ, time, size);
+    const starboard = water.heightAt(starboardX, starboardZ, time, size);
     const center = (bow + stern + port + starboard) / 4;
 
     // Throttle lifts the bow and turns lay the hull over. Both are what a boat
     // under way actually does, and both smooth the moment thrust or rudder
     // changes instead of letting it read as a step.
-    const trim = -THREE.MathUtils.clamp(this.surge / spec.accel, -1, 1) * 0.05;
-    const bank = -THREE.MathUtils.clamp(this.yawRate * this.speed * 0.02, -1, 1) * 0.16;
+    const ease = 1 - Math.exp(-delta * 4);
+    this.trim += (-THREE.MathUtils.clamp(this.surge / spec.accel, -1, 1) * 0.05 - this.trim) * ease;
+    this.bank +=
+      (-THREE.MathUtils.clamp(this.yawRate * this.speed * 0.02, -1, 1) * 0.16 - this.bank) * ease;
 
-    // Chase the wave-following pose rather than snapping to it: sampling a
-    // moving hull against a moving surface is noisy, and the noise is what
-    // reads as judder at speed.
-    const follow = 1 - Math.exp(-delta * 7);
-    const attitude = 1 - Math.exp(-delta * 5);
-    this.heave += (center * response - this.heave) * follow;
-    this.pitch += (Math.atan2(stern - bow, halfL * 2) * response + trim - this.pitch) * attitude;
-    this.roll += (Math.atan2(starboard - port, halfB * 2) * response + bank - this.roll) * attitude;
+    // A planing hull runs flatter than the water it crosses and a moored one
+    // settles down. Both damp attitude only — never how deep the hull sits,
+    // because a hull riding below the surface has the sea drawn inside it.
+    const pace = THREE.MathUtils.clamp(Math.abs(this.speed) / spec.maxSpeed, 0, 1);
+    const lean = settleFactor * (1 - 0.4 * pace);
 
-    this.group.position.y = this.heave;
+    // Light smoothing rounds off the corners where the hull crosses from one
+    // water triangle into the next, without lagging so far behind the surface
+    // that it climbs aboard.
+    const follow = 1 - Math.exp(-delta * 16);
+    const attitude = 1 - Math.exp(-delta * 12);
+    this.heave += (center - this.heave) * follow;
+    this.pitch += (Math.atan2(stern - bow, halfL * 2) * lean - this.pitch) * attitude;
+    this.roll += (Math.atan2(starboard - port, halfB * 2) * lean - this.roll) * attitude;
+
+    const pitch = this.pitch + this.trim;
+    const roll = this.roll + this.bank;
+    const lift = this.floodGuard(water, time, pitch, roll, halfL, halfB, [
+      bowX,
+      bowZ,
+      sternX,
+      sternZ,
+      portX,
+      portZ,
+      starboardX,
+      starboardZ,
+    ]);
+
+    this.group.position.y = this.heave + lift;
     this.group.rotation.y = this.heading;
-    this.group.rotation.x = this.pitch;
-    this.group.rotation.z = this.roll;
+    this.group.rotation.x = pitch;
+    this.group.rotation.z = roll;
+  }
+
+  /**
+   * How far the hull has to lift so the sea it is drawn against stays below the
+   * topsides. Smoothing, damped attitude and the hull's own wave filtering each
+   * leave the surface a little higher than the pose assumes, and the moment it
+   * passes the gunwale the ocean is visible inside the boat.
+   */
+  private floodGuard(
+    water: Water,
+    time: number,
+    pitch: number,
+    roll: number,
+    halfL: number,
+    halfB: number,
+    [bowX, bowZ, sternX, sternZ, portX, portZ, starboardX, starboardZ]: number[],
+  ): number {
+    // Tall ships carry metres of freeboard and nothing the swell does can reach
+    // their decks, so skip the sampling entirely.
+    if (this.clearance > water.maxRelief() * 2) return 0;
+
+    // The whole surface this time, not the part this hull responds to: what
+    // matters here is the water actually being drawn.
+    const bow = water.heightAt(bowX, bowZ, time);
+    const stern = water.heightAt(sternX, sternZ, time);
+    const port = water.heightAt(portX, portZ, time);
+    const starboard = water.heightAt(starboardX, starboardZ, time);
+
+    // Compare each against the hull's own waterline there, given how it lies.
+    const excess = Math.max(
+      bow - (this.heave - pitch * halfL),
+      stern - (this.heave + pitch * halfL),
+      port - (this.heave - roll * halfB),
+      starboard - (this.heave + roll * halfB),
+    );
+    return Math.max(0, excess - this.clearance);
   }
 
   /** Drop the smoothed attitude so a respawned hull does not ease in from the last pose. */
@@ -207,6 +275,8 @@ export class Boat {
     this.heave = 0;
     this.pitch = 0;
     this.roll = 0;
+    this.trim = 0;
+    this.bank = 0;
     this.surge = 0;
     this.yawRate = 0;
   }
@@ -232,6 +302,9 @@ export class Boat {
     });
 
     const hullHeight = Math.max(0.5, spec.length * 0.07);
+    // The blockout is a closed box, so its deck is the first thing the sea
+    // would have to climb over.
+    this.clearance = hullHeight * 0.85;
     const body = new THREE.Mesh(
       new THREE.BoxGeometry(spec.beam, hullHeight, spec.length * 0.82),
       hullMaterial,
